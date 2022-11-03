@@ -33,6 +33,17 @@ async function run() {
     try {
         // make database 'PracticeMongodbCrud' and set of collection 'users'
         const userCollection = client.db('PracticeMongodbCrud').collection('users');
+        // send data to client use start
+        app.get('/users', async (req, res) => {
+            const query = {};
+            // collect data from database base on query
+            const cursor = userCollection.find(query);
+            // convert database data to array
+            const users = await cursor.toArray();
+            // send response to use from client side
+            res.send(users);
+        })
+        // send data to client use end
 
         // read client data start
         app.post('/users', async (req, res) => {
