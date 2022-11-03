@@ -1,7 +1,8 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const { query } = require('express');
 
 const port = process.env.PORT || 5000;
 
@@ -33,6 +34,7 @@ async function run() {
     try {
         // make database 'PracticeMongodbCrud' and set of collection 'users'
         const userCollection = client.db('PracticeMongodbCrud').collection('users');
+
         // send data to client use start
         app.get('/users', async (req, res) => {
             const query = {};
@@ -56,6 +58,19 @@ async function run() {
             res.send(result);
         })
         // read client data end
+
+        // delete data start
+        app.delete('/users/:id', async (req, res) => {
+            // params data check; which have send from client as a request
+            const id = req.params.id;
+            // match with params id with database _id: Object(id)
+            const query = { _id: ObjectId(id) }
+            // one delete perform from database
+            const result = await userCollection.deleteOne(query);
+            // send response in client side
+            res.send(result)
+        })
+        // delete data end
     } catch (error) {
 
     }
