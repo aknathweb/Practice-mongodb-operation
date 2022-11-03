@@ -71,6 +71,41 @@ async function run() {
             res.send(result)
         })
         // delete data end
+
+        app.get('/users/:id', async (req, res) => {
+            // params data check; which have send from client as a request
+            const id = req.params.id;
+            // match with params id with database _id: Object(id)
+            const query = { _id: ObjectId(id) }
+            // collect query id information from database
+            const result = await userCollection.findOne(query);
+            // send response in client side
+            res.send(result)
+        })
+
+        // update data start
+        app.put('/users/:id', async (req, res) => {
+            // params data check; which have send from client as a request
+            const id = req.params.id;
+            // match with params id with database _id: Object(id)
+            const query = { _id: ObjectId(id) }
+            // Collect Change information from client
+            const updatedUser = req.body;
+            console.log(updatedUser);
+            // set data update permission
+            const option = { upsert: true };
+            // set new update data
+            const updatedUserOperation = {
+                $set: {
+                    name: updatedUser.name,
+                    email: updatedUser.email
+                }
+            }
+            // update data on database
+            const result = await userCollection.updateOne(query, updatedUserOperation, option)
+            res.send(result)
+        })
+        // update data end
     } catch (error) {
 
     }
